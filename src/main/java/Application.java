@@ -17,40 +17,49 @@ public class Application {
     private void processExcel() throws Exception {
 
         FileInputStream fileInputStream = new FileInputStream(new File("/<path>/input_test.xlsx"));
-        Workbook workbook = new XSSFWorkbook(fileInputStream);
+        Workbook workbook_input = new XSSFWorkbook(fileInputStream);
 
         // Reading the Excel
-        Sheet sheet = workbook.getSheetAt(0);
-        List<String> headers = new ArrayList<String>();
+        Sheet sheet = workbook_input.getSheetAt(0); // First sheet only
 
-        for (Cell cell : sheet.getRow(0)) { // Adding the headers from the first row only
-            switch (cell.getCellType()) {
-                case STRING:
-                    headers.add(cell.getRichStringCellValue().getString());
-                    break;
-                default:
-                    throw new Exception("Not string header");
+        List<List<String>> rows = new ArrayList<>();
+
+        int ithRow = 0;
+        for (Row row : sheet) { // Adding all rows
+            rows.add(new ArrayList());
+            for (Cell cell : row) { // Adding all columns
+                // Assuming all data is in string format only
+                rows.get(ithRow).add(cell.getRichStringCellValue().getString());
             }
+            ithRow++;
         }
-
+        workbook_input.close();
         fileInputStream.close();
 
         System.out.println("Read all formatted and colored headers as simple text");
-        for (int i = 1; i <= headers.size(); i++) {
-            System.out.println(i + ". " + headers.get(i-1));
+        System.out.println("Rows: " + rows.size());
+        System.out.println("Columns: " + rows.get(0).size());
+        for (int row = 0; row < rows.size(); row++) { // Assuming we need to copy the first 22 rows only
+            for (int col = 0; col < rows.get(0).size(); col++) {
+                System.out.print(rows.get(row).get(col));
+            }
         }
 
-        // Overriding the Excel header cells
-        Row headerRow = sheet.createRow(0);
-        for (int i = 0; i < headers.size(); i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headers.get(i));
+        // Create an output Excel and add the cell values from the ArrayList
+        Workbook workbook_output = new XSSFWorkbook();
+        Sheet sheet_output = workbook_output.createSheet();
+        for (int row = 0; row < rows.size(); row++) {
+            Row r = sheet_output.createRow(row);
+            for (int col = 0; col < 3; col++) { // Set the columns you want to add only
+                Cell cell = r.createCell(col);
+                cell.setCellValue(rows.get(row).get(col));
+            }
         }
 
         // Write to Excel
         FileOutputStream fileOutputStream = new FileOutputStream("/<path>/output_test.xlsx");
-        workbook.write(fileOutputStream);
-        workbook.close();
+        workbook_output.write(fileOutputStream);
+        workbook_output.close();
         fileOutputStream.close();
     }
 }
