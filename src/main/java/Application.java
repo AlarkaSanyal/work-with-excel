@@ -16,7 +16,7 @@ public class Application {
 
     private void processExcel() throws Exception {
 
-        FileInputStream fileInputStream = new FileInputStream(new File("/<path>/input_test.xlsx"));
+        FileInputStream fileInputStream = new FileInputStream(new File("/Users/Z003985/repos/work-with-excel/src/main/resources/input_test.xlsx"));
         Workbook workbook_input = new XSSFWorkbook(fileInputStream);
 
         // Reading the Excel
@@ -57,7 +57,7 @@ public class Application {
         }
 
         // Write to Excel
-        FileOutputStream fileOutputStream = new FileOutputStream("/<path>/output_test.xlsx");
+        FileOutputStream fileOutputStream = new FileOutputStream("/Users/Z003985/repos/work-with-excel/src/main/resources/output_test.xlsx");
         workbook_output.write(fileOutputStream);
         workbook_output.close();
         fileOutputStream.close();
