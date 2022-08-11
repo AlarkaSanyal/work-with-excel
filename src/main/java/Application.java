@@ -155,8 +155,26 @@ public class Application {
             for (Row row : sheet) { // Adding all rows
                 rows.add(new ArrayList());
                 for (Cell cell : row) { // Adding all columns
-                    // Assuming all data is in string format only
-                    rows.get(ithRow).add(cell.getRichStringCellValue().getString());
+                    switch (cell.getCellType()) {
+                        case STRING:
+                            rows.get(ithRow).add(cell.getRichStringCellValue().getString());
+                            break;
+                        case NUMERIC:
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                rows.get(ithRow).add(cell.getDateCellValue() + "");
+                            } else {
+                                rows.get(ithRow).add(cell.getNumericCellValue() + "");
+                            }
+                            break;
+                        case BOOLEAN:
+                            rows.get(ithRow).add(cell.getBooleanCellValue() + "");
+                            break;
+                        case FORMULA:
+                            rows.get(ithRow).add(cell.getCellFormula() + "");
+                            break;
+                        default:
+                            throw new Exception("Undefined type in Sheet (" + sheetNumber + ") " + sheetName);
+                    }
                 }
                 ithRow++;
             }
