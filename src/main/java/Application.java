@@ -163,7 +163,7 @@ public class Application {
                             if (DateUtil.isCellDateFormatted(cell)) {
                                 rows.get(ithRow).add(cell.getDateCellValue() + "");
                             } else {
-                                rows.get(ithRow).add(cell.getNumericCellValue() + "");
+                                rows.get(ithRow).add(Double.valueOf(cell.getNumericCellValue()).longValue() + "");
                             }
                             break;
                         case BOOLEAN:
